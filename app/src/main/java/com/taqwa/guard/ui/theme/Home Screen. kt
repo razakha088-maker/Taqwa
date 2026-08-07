@@ -152,3 +152,66 @@ Row(
     }
 
 }
+
+Spacer(modifier = Modifier.height(20.dp))
+
+Card(
+    modifier = Modifier.fillMaxWidth(),
+    shape = RoundedCornerShape(20.dp),
+    colors = CardDefaults.cardColors(
+        containerColor = Color(0xFF111A13)
+    )
+) {
+
+    Column(
+        modifier = Modifier.padding(20.dp)
+    ) {
+
+        Text(
+            text = "Protection Status",
+            color = Color.Gray,
+            fontSize = 16.sp
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Column {
+
+                Text(
+                    text = if (enabled) "PROTECTED" else "NOT PROTECTED",
+                    color = if (enabled) Color(0xFF4CAF50) else Color.Red,
+                    fontSize = 24.sp
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = if (enabled)
+                        "Taqwa Guard is protecting your device"
+                    else
+                        "Protection is disabled",
+
+                    color = Color.LightGray,
+                    fontSize = 14.sp
+                )
+
+            }
+
+            Switch(
+                checked = enabled,
+                onCheckedChange = {
+                    enabled = it
+                }
+            )
+
+        }
+
+    }
+
+}
