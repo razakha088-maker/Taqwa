@@ -1,0 +1,150 @@
+Taqwa/
+│
+├── .github/
+│   └── workflows/
+│       └── build.yml
+│
+├── app/
+│   ├── build.gradle
+│   └── src/
+│       └── main/
+│           ├── AndroidManifest.xml
+│           ├── java/
+│           │   └── com/
+│           │       └── taqwa/
+│           │           └── app/
+│           │               └── MainActivity.kt
+│           │
+│           └── res/
+│               └── layout/
+│                   └── activity_main.xml
+│
+├── build.gradle
+├── settings.gradle
+├── gradle.properties
+└── README.md
+
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "Taqwa"
+include ':app'
+
+plugins {
+    id 'com.android.application' version '8.7.3' apply false
+    id 'org.jetbrains.kotlin.android' version '2.0.21' apply false
+}
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'com.taqwa.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.taqwa.app"
+        minSdk 24
+        targetSdk 35
+        versionCode 1
+        versionName "1.0"
+    }
+}
+
+dependencies {
+
+    implementation "androidx.core:core-ktx:1.15.0"
+    implementation "androidx.appcompat:appcompat:1.7.0"
+}
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:theme="@style/AppTheme"
+        android:label="Taqwa">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+
+            <intent-filter>
+
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+
+            </intent-filter>
+
+        </activity>
+
+    </application>
+
+</manifest>
+app/src/main/java/com/taqwa/app/MainActivity.kt
+package com.taqwa.app
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+
+class MainActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setContentView(R.layout.activity_main)
+
+    }
+}
+app/src/main/res/layout/activity_main.xml
+.github/workflows/build.yml
+name: Build Taqwa APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: temurin
+
+
+    - name: Build APK
+      run: |
+        chmod +x gradlew
+        ./gradlew assembleDebug
+
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: Taqwa-APK
+        path: app/build/outputs/apk/debug/app-debug.apk
