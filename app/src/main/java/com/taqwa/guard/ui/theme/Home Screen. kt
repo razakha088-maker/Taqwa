@@ -215,3 +215,305 @@ Card(
     }
 
 }
+
+Spacer(modifier = Modifier.height(20.dp))
+
+Text(
+    text = "Statistics",
+    color = Color.White,
+    fontSize = 22.sp
+)
+
+Spacer(modifier = Modifier.height(12.dp))
+
+Row(
+    modifier = Modifier.fillMaxWidth(),
+    horizontalArrangement = Arrangement.spacedBy(12.dp)
+) {
+
+    StatCard(
+        title = "Images",
+        value = "0"
+    )
+
+    StatCard(
+        title = "Videos",
+        value = "0"
+    )
+
+}
+
+Spacer(modifier = Modifier.height(12.dp))
+
+Row(
+    modifier = Modifier.fillMaxWidth(),
+    horizontalArrangement = Arrangement.spacedBy(12.dp)
+) {
+
+    StatCard(
+        title = "Detections",
+        value = "0"
+    )
+
+    StatCard(
+        title = "Today",
+        value = "0m"
+    )
+
+}
+
+
+@Composable
+fun StatCard(
+    title: String,
+    value: String
+) {
+
+    Card(
+        modifier = Modifier.weight(1f),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF111A13)
+        ),
+        shape = RoundedCornerShape(18.dp)
+    ) {
+
+        Column(
+            modifier = Modifier.padding(18.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Text(
+                text = value,
+                color = Color(0xFF4CAF50),
+                fontSize = 26.sp
+            )
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            Text(
+                text = title,
+                color = Color.LightGray,
+                fontSize = 14.sp
+            )
+
+        }
+
+    }
+
+}
+
+
+Spacer(modifier = Modifier.height(20.dp))
+
+Text(
+    text = "Detection Mode",
+    color = Color.White,
+    fontSize = 22.sp
+)
+
+Spacer(modifier = Modifier.height(12.dp))
+
+var selectedMode by remember {
+    mutableStateOf("Explicit")
+}
+
+Row(
+    modifier = Modifier.fillMaxWidth(),
+    horizontalArrangement = Arrangement.spacedBy(12.dp)
+) {
+
+    ModeCard(
+        title = "Explicit",
+        description = "Explicit Content Only",
+        selected = selectedMode == "Explicit"
+    ) {
+        selectedMode = "Explicit"
+    }
+
+    ModeCard(
+        title = "Women",
+        description = "Women Detection",
+        selected = selectedMode == "Women"
+    ) {
+        selectedMode = "Women"
+    }
+
+    ModeCard(
+        title = "Both",
+        description = "Both Modes",
+        selected = selectedMode == "Both"
+    ) {
+        selectedMode = "Both"
+    }
+
+}
+
+
+
+@Composable
+fun ModeCard(
+    title: String,
+    description: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+
+    Card(
+        modifier = Modifier
+            .width(140.dp)
+            .height(180.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(
+            containerColor =
+            if (selected)
+                Color(0xFF1B2A1B)
+            else
+                Color(0xFF111A13)
+        )
+    ) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+
+            Text(
+                text = title,
+                color = Color(0xFF67E06F),
+                fontSize = 20.sp
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                text = description,
+                color = Color.White,
+                fontSize = 14.sp
+            )
+
+        }
+
+    }
+
+}
+
+
+Spacer(modifier = Modifier.height(20.dp))
+
+Text(
+    text = "Quick Actions",
+    color = Color.White,
+    fontSize = 22.sp
+)
+
+Spacer(modifier = Modifier.height(12.dp))
+
+Row(
+    modifier = Modifier.fillMaxWidth(),
+    horizontalArrangement = Arrangement.spacedBy(12.dp)
+) {
+
+    ActionCard("Quick Toggle")
+    ActionCard("Sensitivity")
+
+}
+
+Spacer(modifier = Modifier.height(12.dp))
+
+Row(
+    modifier = Modifier.fillMaxWidth(),
+    horizontalArrangement = Arrangement.spacedBy(12.dp)
+) {
+
+    ActionCard("Allowed Apps")
+    ActionCard("Statistics")
+
+}
+
+@Composable
+fun ActionCard(
+    title: String
+) {
+
+    Card(
+        modifier = Modifier
+            .weight(1f)
+            .height(110.dp),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF111A13)
+        )
+    ) {
+
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+
+            Text(
+                text = title,
+                color = Color.White,
+                fontSize = 16.sp
+            )
+
+        }
+
+    }
+
+}
+
+
+Spacer(modifier = Modifier.height(24.dp))
+
+NavigationBar(
+    containerColor = Color(0xFF111A13)
+) {
+
+    NavigationBarItem(
+        selected = true,
+        onClick = { },
+        icon = {
+            Text("🏠")
+        },
+        label = {
+            Text("Home")
+        }
+    )
+
+    NavigationBarItem(
+        selected = false,
+        onClick = { },
+        icon = {
+            Text("🛡️")
+        },
+        label = {
+            Text("Protection")
+        }
+    )
+
+    NavigationBarItem(
+        selected = false,
+        onClick = { },
+        icon = {
+            Text("📊")
+        },
+        label = {
+            Text("Insights")
+        }
+    )
+
+    NavigationBarItem(
+        selected = false,
+        onClick = { },
+        icon = {
+            Text("⚙️")
+        },
+        label = {
+            Text("Settings")
+        }
+    )
+}
