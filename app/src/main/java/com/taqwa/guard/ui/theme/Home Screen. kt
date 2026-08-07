@@ -1,3 +1,22 @@
+@Composable
+fun HomeScreen() {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+
+        Text(
+            text = "TAQWA",
+            fontSize = 32.sp,
+            color = Color.White
+        )
+
+    }
+
+}
+
 package com.taqwa.guard
 
 import android.os.Bundle
