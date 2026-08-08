@@ -230,8 +230,18 @@ fun HomeScreen() {
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
 
-                StatCard("0", "Images")
-                StatCard("0", "Videos")
+                StatCard(
+    modifier = Modifier.weight(1f),
+    number = "0",
+    label = "Images"
+)
+
+StatCard(
+    modifier = Modifier.weight(1f),
+    number = "0",
+    label = "Videos"
+)
+               
             }
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -241,8 +251,18 @@ fun HomeScreen() {
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
 
-                StatCard("0", "Detections")
-                StatCard("0m", "Today")
+                StatCard(
+    modifier = Modifier.weight(1f),
+    number = "0",
+    label = "Detections"
+)
+
+StatCard(
+    modifier = Modifier.weight(1f),
+    number = "0m",
+    label = "Today"
+)
+                
             }
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -302,12 +322,16 @@ fun HomeScreen() {
 
 @Composable
 fun StatCard(
+    modifier: Modifier = Modifier,
     number: String,
     label: String
 ) {
+   
+    
+) {
 
     Card(
-        modifier = Modifier.weight(1f),
+        modifier = Modifier
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFF122218)
