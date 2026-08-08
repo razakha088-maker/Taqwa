@@ -339,19 +339,22 @@ fun QuranHadithCard() {
         )
     ) {
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFF102D20),
-                            Color(0xFF071A13),
-                            Color(0xFF020B08)
-                        )
-                    )
+        
+              Box(
+    modifier = Modifier
+        .fillMaxWidth()
+        .background(
+            Brush.radialGradient(
+                colors = listOf(
+                    Color(0xFF1D4934),
+                    Color(0xFF0C281D),
+                    Color(0xFF03100C)
                 )
-                .padding(20.dp)
+            )
+        )
+        .padding(22.dp)
+)     
+                   
         ) {
 
             Column(
