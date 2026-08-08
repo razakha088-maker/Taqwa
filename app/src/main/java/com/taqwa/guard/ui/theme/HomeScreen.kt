@@ -73,7 +73,16 @@ fun HomeScreen() {
     modifier = Modifier.padding(18.dp)
 ) {
 
-    val quotes = listOf(
+    val quotes = listOf(var currentQuote by remember {
+    mutableStateOf(0)
+}
+
+LaunchedEffect(Unit) {
+    while (true) {
+        delay(6000)
+        currentQuote = (currentQuote + 1) % quotes.size
+    }
+}
         "রাসূলুল্লাহ ﷺ বলেছেন:\n\"দুই চোখের জিনা হলো (হারাম জিনিসের দিকে) তাকানো।\"\n— সহিহ বুখারি ৬২৪৩",
 
         "\"মুমিন পুরুষদের বলুন, তারা যেন তাদের দৃষ্টিকে সংযত রাখে এবং তাদের লজ্জাস্থানের হেফাজত করে।\"\n— সূরা নূর ২৪:৩০",
@@ -86,7 +95,7 @@ fun HomeScreen() {
     )
 
     Text(
-        text = quotes.first(),
+        text = text = quotes[currentQuote]
         fontSize = 16.sp,
         color = Color.White,
         lineHeight = 24.sp
@@ -118,3 +127,16 @@ fun HomeScreen() {
 
 }
 
+
+    import androidx.compose.runtime.*
+import kotlinx.coroutines.delay
+
+    
+
+
+    Spacer(modifier = Modifier.height(16.dp))
+Text(
+    text = "${currentQuote + 1} / ${quotes.size}",
+    color = Color(0xFF6CFF72),
+    fontSize = 14.sp
+)
