@@ -33,7 +33,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
-
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.ui.input.pointer.pointerInput
 
 @Composable
 fun HomeScreen() {
@@ -622,5 +623,170 @@ fun NavigationItem(
                 },
             fontSize = 11.sp
         )
+    }
+}
+
+
+@Composable
+fun QuranHadithCard(
+    messages: List<String>
+) {
+
+    var currentPage by remember {
+        mutableIntStateOf(0)
+    }
+
+    var dragAmount by remember {
+        mutableIntStateOf(0)
+    }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(6000)
+
+            currentPage =
+                (currentPage + 1) % messages.size
+        }
+    }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .pointerInput(Unit) {
+
+                detectHorizontalDragGestures(
+
+                    onHorizontalDrag = { _, amount ->
+
+                        dragAmount += amount.toInt()
+                    },
+
+                    onDragEnd = {
+
+                        if (dragAmount < -80) {
+
+                            currentPage =
+                                (currentPage + 1) % messages.size
+
+                        } else if (dragAmount > 80) {
+
+                            currentPage =
+                                if (currentPage == 0) {
+                                    messages.lastIndex
+                                } else {
+                                    currentPage - 1
+                                }
+                        }
+
+                        dragAmount = 0
+                    }
+                )
+            },
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Transparent
+        )
+    ) {
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFF102B20),
+                            Color(0xFF071A13),
+                            Color(0xFF03100C)
+                        )
+                    )
+                )
+                .padding(20.dp)
+        ) {
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Text(
+                    text = "☾  QURAN & HADITH",
+                    color = Color(0xFFE5C96A),
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(
+                    modifier = Modifier.height(10.dp)
+                )
+
+                Text(
+                    text = "❝",
+                    color = Color(0xFF9BEA7C),
+                    fontSize = 34.sp
+                )
+
+                Spacer(
+                    modifier = Modifier.height(4.dp)
+                )
+
+                Crossfade(
+                    targetState = currentPage,
+                    label = "quran_hadith_swipe"
+                ) { page ->
+
+                    Text(
+                        text = messages[page],
+                        modifier = Modifier.fillMaxWidth(),
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        lineHeight = 27.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(
+                    modifier = Modifier.height(16.dp)
+                )
+
+                Text(
+                    text = "←  Swipe  →",
+                    color = Color(0xFF9FB5AC),
+                    fontSize = 12.sp
+                )
+
+                Spacer(
+                    modifier = Modifier.height(10.dp)
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.Center
+                ) {
+
+                    messages.indices.forEach { index ->
+
+                        Box(
+                            modifier = Modifier
+                                .padding(horizontal = 3.dp)
+                                .size(
+                                    if (index == currentPage) {
+                                        9.dp
+                                    } else {
+                                        6.dp
+                                    }
+                                )
+                                .background(
+                                    color =
+                                        if (index == currentPage) {
+                                            Color(0xFF9BEA7C)
+                                        } else {
+                                            Color(0xFF526B61)
+                                        },
+                                    shape = RoundedCornerShape(50.dp)
+                                )
+                        )
+                    }
+                }
+            }
+        }
     }
 }
