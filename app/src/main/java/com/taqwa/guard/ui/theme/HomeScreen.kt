@@ -1,5 +1,4 @@
 package com.taqwa.guard.ui.theme
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,9 +27,109 @@ fun HomeScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF061410))
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF061410),
+                        Color(0xFF081C16),
+                        Color(0xFF04100C)
+                    )
+                )
+            )
             .padding(16.dp)
     ) {
+
+        Text(
+            text = "TAQWA",
+            color = Color.White,
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(6.dp))
+
+        Text(
+            text = "Guard your gaze. Protect your soul.",
+            color = Color.LightGray,
+            fontSize = 14.sp
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // আগের Protection Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(20.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xFF10241C)
+            )
+        ) {
+
+            Column(
+                modifier = Modifier.padding(20.dp)
+            ) {
+
+                Text(
+                    text = "●  ACTIVE",
+                    color = Color(0xFF6CFF72),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = "Protection is ON",
+                    color = Color.White,
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Text(
+                    text = "You are protected",
+                    color = Color.LightGray,
+                    fontSize = 16.sp
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // আগের অংশগুলো
+        Text(
+            text = "DETECTION MODE",
+            color = Color(0xFF9BEA9E),
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+
+            ModeCard(
+                modifier = Modifier.weight(1f),
+                title = "Explicit\nContent"
+            )
+
+            ModeCard(
+                modifier = Modifier.weight(1f),
+                title = "Women\nDetection"
+            )
+
+            ModeCard(
+                modifier = Modifier.weight(1f),
+                title = "Both\nModes"
+            )
+        }
+    }
+}
+
 
         Text(
             text = "TAQWA",
