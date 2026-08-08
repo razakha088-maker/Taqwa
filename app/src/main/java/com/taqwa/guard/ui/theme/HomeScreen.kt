@@ -1,5 +1,4 @@
 package com.taqwa.guard.ui.theme
-
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
