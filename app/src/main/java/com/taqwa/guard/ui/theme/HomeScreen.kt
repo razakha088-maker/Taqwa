@@ -1,4 +1,5 @@
- package com.taqwa.guard.ui.theme
+package com.taqwa.guard.ui.theme
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -114,7 +115,7 @@ fun HomeScreen() {
                 ) {
 
                     ModeCard(
-                        modifier = 
+                        modifier = Modifier.weight(1f),
                         title = "Explicit\nContent"
                     )
 
