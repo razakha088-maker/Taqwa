@@ -1,6 +1,8 @@
 package com.taqwa.guard.ui.theme
+
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,16 +13,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,79 +28,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
-import androidx.compose.ui.input.pointer.pointerInput
+
 
 @Composable
 fun HomeScreen() {
-
-    val scrollState = rememberScrollState()
-
-    val messages = listOf(
-        """
-        রাসূলুল্লাহ ﷺ বলেছেন:
-
-        "দুই চোখের জিনা হলো
-        (হারাম জিনিসের দিকে) তাকানো।"
-
-        সূত্র: সহিহ বুখারি : ৬২৪৩
-        """.trimIndent(),
-
-        """
-        "মুমিন পুরুষদের বলুন,
-        তারা যেন তাদের দৃষ্টিকে সংযত রাখে
-        এবং তাদের লজ্জাস্থানের হেফাজত করে।"
-
-        — সূরা নূর: ৩০
-        """.trimIndent(),
-
-        """
-        আলী ইবনে আবু তালিব (রা.) থেকে বর্ণিত:
-
-        রাসূলুল্লাহ ﷺ বলেছেন,
-        "হে আলী! এক দৃষ্টির পর আরেক দৃষ্টি দিও না।
-        কারণ প্রথম দৃষ্টি তোমার জন্য ক্ষমাযোগ্য,
-        কিন্তু দ্বিতীয়টি নয়।"
-
-        সূত্র: সুনানে আবু দাউদ : ২১৪৯
-        """.trimIndent(),
-
-        """
-        জারির ইবনে আব্দুল্লাহ (রা.) থেকে বর্ণিত:
-
-        আমি রাসূলুল্লাহ ﷺ-কে আকস্মিক দৃষ্টি
-        সম্পর্কে জিজ্ঞাসা করলে তিনি বললেন,
-
-        "তোমার দৃষ্টি ফিরিয়ে নাও।"
-
-        সূত্র: সহিহ মুসলিম : ২১৫৯
-        """.trimIndent(),
-
-        """
-        "মুমিন নারীদেরকে বলুন
-        তারা যেন তাদের দৃষ্টিকে সংযত রাখে
-        এবং তাদের লজ্জাস্থানের হেফাজত করে।"
-
-        — সূরা নূর: ৩১
-        """.trimIndent()
-    )
-
-    var currentMessage by remember {
-        mutableIntStateOf(0)
-    }
-
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(5000)
-            currentMessage =
-                (currentMessage + 1) % messages.size
-        }
-    }
 
     Box(
         modifier = Modifier
@@ -108,9 +45,9 @@ fun HomeScreen() {
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF03100C),
-                        Color(0xFF071A13),
-                        Color(0xFF04110C)
+                        Color(0xFF06140F),
+                        Color(0xFF09251A),
+                        Color(0xFF03100C)
                     )
                 )
             )
@@ -119,535 +56,247 @@ fun HomeScreen() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 22.dp,
-                    bottom = 24.dp
-                )
+                .padding(16.dp)
         ) {
 
-            // Header
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            // --------------------------------
+            // TAQWA HEADER
+            // --------------------------------
 
-                Text(
-                    text = "☰",
-                    color = Color.White,
-                    fontSize = 30.sp
-                )
+            Text(
+                text = "☾",
+                color = Color(0xFFE5C96A),
+                fontSize = 28.sp,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
 
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+            Spacer(
+                modifier = Modifier.height(4.dp)
+            )
 
-                    Text(
-                        text = "TAQWA",
-                        color = Color.White,
-                        fontSize = 30.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 6.sp
-                    )
+            Text(
+                text = "TAQWA",
+                color = Color.White,
+                fontSize = 34.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 5.sp,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
 
-                    Text(
-                        text = "Guard your gaze. Protect your soul.",
-                        color = Color(0xFFB8C9C1),
-                        fontSize = 12.sp
-                    )
-                }
+            Text(
+                text = "Guard your gaze. Protect your soul.",
+                color = Color(0xFFB8C8C0),
+                fontSize = 13.sp,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
 
-                Text(
-                    text = "✓",
-                    color = Color(0xFF9BEA7C),
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            Spacer(
+                modifier = Modifier.height(18.dp)
+            )
 
-            Spacer(modifier = Modifier.height(22.dp))
 
-            // Protection Card
+            // --------------------------------
+            // QURAN & HADITH SLIDER
+            // --------------------------------
+
+            QuranHadithCard()
+
+
+            Spacer(
+                modifier = Modifier.height(18.dp)
+            )
+
+
+            // --------------------------------
+            // PROTECTION STATUS
+            // --------------------------------
+
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(24.dp),
+                shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFF0C241B)
+                    containerColor = Color(0xFF091B15)
                 )
             ) {
 
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(22.dp)
+                        .padding(18.dp)
                 ) {
 
                     Text(
-                        text = "●  ACTIVE",
-                        color = Color(0xFF7CF58A),
-                        fontSize = 15.sp,
+                        text = "Protection Status",
+                        color = Color(0xFFB8C8C0),
+                        fontSize = 14.sp
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(6.dp)
+                    )
+
+                    Text(
+                        text = "PROTECTED",
+                        color = Color(0xFF8FE36F),
+                        fontSize = 23.sp,
                         fontWeight = FontWeight.Bold
                     )
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(
+                        modifier = Modifier.height(4.dp)
+                    )
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        Column(
-                            modifier = Modifier.weight(1f)
-                        ) {
-
-                            Text(
-                                text = "Protection is ON",
-                                color = Color.White,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-
-                            Spacer(modifier = Modifier.height(6.dp))
-
-                            Text(
-                                text = "✓  You are safe",
-                                color = Color(0xFFB9E8B9),
-                                fontSize = 16.sp
-                            )
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .size(70.dp)
-                                .background(
-                                    color = Color(0xFF1B704A),
-                                    shape = RoundedCornerShape(50.dp)
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-
-                            Text(
-                                text = "ON",
-                                color = Color.White,
-                                fontSize = 17.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
+                    Text(
+                        text = "✓  Taqwa Guard is protecting your device",
+                        color = Color(0xFFDCE8E2),
+                        fontSize = 13.sp
+                    )
                 }
             }
 
-            Spacer(modifier = Modifier.height(18.dp))
 
-            // Detection Mode
+            Spacer(
+                modifier = Modifier.height(18.dp)
+            )
+
+
+            // --------------------------------
+            // STATISTICS
+            // --------------------------------
+
             Text(
-                text = "DETECTION MODE",
-                color = Color(0xFFE5C96A),
-                fontSize = 17.sp,
+                text = "Statistics",
+                color = Color.White,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(
+                modifier = Modifier.height(10.dp)
+            )
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
-                DetectionCard(
-                    modifier = Modifier.weight(1f),
-                    title = "Explicit\nContent",
-                    active = true
+                StatisticCard(
+                    title = "Images",
+                    value = "0",
+                    modifier = Modifier.weight(1f)
                 )
 
-                DetectionCard(
-                    modifier = Modifier.weight(1f),
-                    title = "Women\nDetection",
-                    active = false
+                StatisticCard(
+                    title = "Videos",
+                    value = "0",
+                    modifier = Modifier.weight(1f)
                 )
 
-                DetectionCard(
-                    modifier = Modifier.weight(1f),
-                    title = "Both\nModes",
-                    active = false
+                StatisticCard(
+                    title = "Blocked",
+                    value = "0",
+                    modifier = Modifier.weight(1f)
+                )
+
+                StatisticCard(
+                    title = "Time",
+                    value = "0m",
+                    modifier = Modifier.weight(1f)
                 )
             }
 
-            Spacer(modifier = Modifier.height(18.dp))
 
-            // Statistics
+            Spacer(
+                modifier = Modifier.height(18.dp)
+            )
+
+
+            // --------------------------------
+            // QUICK ACTIONS
+            // --------------------------------
+
+            Text(
+                text = "Quick Actions",
+                color = Color.White,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(
+                modifier = Modifier.height(10.dp)
+            )
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
-                StatCard(
-                    modifier = Modifier.weight(1f),
-                    number = "0",
-                    label = "Images\nBlurred"
-                )
-
-                StatCard(
-                    modifier = Modifier.weight(1f),
-                    number = "0",
-                    label = "Videos\nBlurred"
-                )
-
-                StatCard(
-                    modifier = Modifier.weight(1f),
-                    number = "0m",
-                    label = "Protected\nTime"
-                )
-
-                StatCard(
-                    modifier = Modifier.weight(1f),
-                    number = "0",
-                    label = "Detections\nToday"
-                )
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // Quran / Hadith Slider
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(22.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFF10261D)
-                )
-            ) {
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp)
-                ) {
-
-                    Text(
-                        text = "QURAN & HADITH",
-                        color = Color(0xFFE5C96A),
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Crossfade(
-                        targetState = currentMessage,
-                        label = "message_slide"
-                    ) { index ->
-
-                        Text(
-                            text = messages[index],
-                            modifier = Modifier.fillMaxWidth(),
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            lineHeight = 25.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(14.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-
-                        messages.indices.forEach { index ->
-
-                            Box(
-                                modifier = Modifier
-                                    .padding(horizontal = 3.dp)
-                                    .size(
-                                        if (index == currentMessage) {
-                                            9.dp
-                                        } else {
-                                            6.dp
-                                        }
-                                    )
-                                    .background(
-                                        color =
-                                            if (index == currentMessage) {
-                                                Color(0xFF8BEA7A)
-                                            } else {
-                                                Color(0xFF557067)
-                                            },
-                                        shape = RoundedCornerShape(50.dp)
-                                    )
-                            )
-                        }
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // Quick Actions
-            Text(
-                text = "QUICK ACTIONS",
-                color = Color(0xFFE5C96A),
-                fontSize = 17.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-
                 ActionCard(
-                    modifier = Modifier.weight(1f),
-                    title = "⚡\nQuick Toggle"
+                    title = "Quick\nToggle",
+                    modifier = Modifier.weight(1f)
                 )
 
                 ActionCard(
-                    modifier = Modifier.weight(1f),
-                    title = "☷\nSensitivity"
+                    title = "Sensitivity",
+                    modifier = Modifier.weight(1f)
                 )
 
                 ActionCard(
-                    modifier = Modifier.weight(1f),
-                    title = "▦\nAllowed Apps"
+                    title = "Allowed\nApps",
+                    modifier = Modifier.weight(1f)
                 )
 
                 ActionCard(
-                    modifier = Modifier.weight(1f),
-                    title = "▥\nStatistics"
+                    title = "Statistics",
+                    modifier = Modifier.weight(1f)
                 )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Bottom Navigation
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(22.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFF0A1B15)
-                )
-            ) {
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-
-                    NavigationItem(
-                        icon = "⌂",
-                        label = "Home",
-                        active = true
-                    )
-
-                    NavigationItem(
-                        icon = "◈",
-                        label = "Protection",
-                        active = false
-                    )
-
-                    NavigationItem(
-                        icon = "✦",
-                        label = "Insights",
-                        active = false
-                    )
-
-                    NavigationItem(
-                        icon = "●",
-                        label = "Profile",
-                        active = false
-                    )
-                }
             }
         }
     }
 }
 
 
-@Composable
-fun DetectionCard(
-    modifier: Modifier,
-    title: String,
-    active: Boolean
-) {
-
-    Card(
-        modifier = modifier.height(115.dp),
-        shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(
-            containerColor =
-                if (active) {
-                    Color(0xFF123D2A)
-                } else {
-                    Color(0xFF0D1D19)
-                }
-        )
-    ) {
-
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-
-            Text(
-                text = title,
-                color =
-                    if (active) {
-                        Color(0xFFB9F6A7)
-                    } else {
-                        Color.White
-                    },
-                fontSize = 14.sp,
-                fontWeight =
-                    if (active) {
-                        FontWeight.Bold
-                    } else {
-                        FontWeight.Normal
-                    },
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}
-
+// ======================================================
+// QURAN & HADITH CARD
+// ======================================================
 
 @Composable
-fun StatCard(
-    modifier: Modifier,
-    number: String,
-    label: String
-) {
+fun QuranHadithCard() {
 
-    Card(
-        modifier = modifier.height(100.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF0D211A)
-        )
-    ) {
+    val messages = listOf(
 
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
+        "সূরা নূর : ৩০\n\nমুমিন পুরুষদের বলুন, তারা যেন তাদের দৃষ্টি সংযত রাখে এবং তাদের লজ্জাস্থানের হেফাজত করে।",
 
-            Text(
-                text = number,
-                color = Color.White,
-                fontSize = 19.sp,
-                fontWeight = FontWeight.Bold
-            )
+        "সূরা নূর : ৩১\n\nমুমিন নারীদের বলুন, তারা যেন তাদের দৃষ্টি সংযত রাখে এবং তাদের লজ্জাস্থানের হেফাজত করে।",
 
-            Spacer(modifier = Modifier.height(5.dp))
+        "আবু হুরায়রা (রাঃ) থেকে বর্ণিত\n\nরাসূলুল্লাহ ﷺ বলেছেন: যে ব্যক্তি আল্লাহ ও পরকালের প্রতি ঈমান রাখে, সে যেন উত্তম কথা বলে অথবা নীরব থাকে।",
 
-            Text(
-                text = label,
-                color = Color(0xFF9FB5AC),
-                fontSize = 10.sp,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}
+        "রাসূলুল্লাহ ﷺ বলেছেন\n\nলজ্জা ঈমানের একটি শাখা।",
 
-
-@Composable
-fun ActionCard(
-    modifier: Modifier,
-    title: String
-) {
-
-    Card(
-        modifier = modifier.height(95.dp),
-        shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF101F19)
-        )
-    ) {
-
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-
-            Text(
-                text = title,
-                color = Color.White,
-                fontSize = 12.sp,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}
-
-
-@Composable
-fun NavigationItem(
-    icon: String,
-    label: String,
-    active: Boolean
-) {
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Text(
-            text = icon,
-            color =
-                if (active) {
-                    Color(0xFF9BEA7C)
-                } else {
-                    Color(0xFF87958F)
-                },
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        Text(
-            text = label,
-            color =
-                if (active) {
-                    Color(0xFF9BEA7C)
-                } else {
-                    Color(0xFF87958F)
-                },
-            fontSize = 11.sp
-        )
-    }
-}
-
-
-@Composable
-fun QuranHadithCard(
-    messages: List<String>
-) {
+        "আল্লাহ বলেন\n\nনিশ্চয়ই আল্লাহ মুত্তাকীদের সঙ্গে আছেন।"
+    )
 
     var currentPage by remember {
         mutableIntStateOf(0)
     }
 
     var dragAmount by remember {
-        mutableIntStateOf(0)
+        mutableFloatStateOf(0f)
     }
 
+
+    // Automatic slide
     LaunchedEffect(Unit) {
+
         while (true) {
+
             delay(6000)
 
             currentPage =
                 (currentPage + 1) % messages.size
         }
     }
+
 
     Card(
         modifier = Modifier
@@ -658,17 +307,17 @@ fun QuranHadithCard(
 
                     onHorizontalDrag = { _, amount ->
 
-                        dragAmount += amount.toInt()
+                        dragAmount += amount
                     },
 
                     onDragEnd = {
 
-                        if (dragAmount < -80) {
+                        if (dragAmount < -80f) {
 
                             currentPage =
                                 (currentPage + 1) % messages.size
 
-                        } else if (dragAmount > 80) {
+                        } else if (dragAmount > 80f) {
 
                             currentPage =
                                 if (currentPage == 0) {
@@ -678,11 +327,13 @@ fun QuranHadithCard(
                                 }
                         }
 
-                        dragAmount = 0
+                        dragAmount = 0f
                     }
                 )
             },
+
         shape = RoundedCornerShape(24.dp),
+
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
         )
@@ -694,9 +345,9 @@ fun QuranHadithCard(
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            Color(0xFF102B20),
+                            Color(0xFF102D20),
                             Color(0xFF071A13),
-                            Color(0xFF03100C)
+                            Color(0xFF020B08)
                         )
                     )
                 )
@@ -709,29 +360,27 @@ fun QuranHadithCard(
             ) {
 
                 Text(
-                    text = "☾  QURAN & HADITH",
+                    text = "❝",
+                    color = Color(0xFF9BEA7C),
+                    fontSize = 34.sp
+                )
+
+                Text(
+                    text = "QURAN & HADITH",
                     color = Color(0xFFE5C96A),
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold
                 )
 
                 Spacer(
-                    modifier = Modifier.height(10.dp)
+                    modifier = Modifier.height(12.dp)
                 )
 
-                Text(
-                    text = "❝",
-                    color = Color(0xFF9BEA7C),
-                    fontSize = 34.sp
-                )
 
-                Spacer(
-                    modifier = Modifier.height(4.dp)
-                )
-
+                // Text transition
                 Crossfade(
                     targetState = currentPage,
-                    label = "quran_hadith_swipe"
+                    label = "QuranHadithTransition"
                 ) { page ->
 
                     Text(
@@ -744,9 +393,11 @@ fun QuranHadithCard(
                     )
                 }
 
+
                 Spacer(
-                    modifier = Modifier.height(16.dp)
+                    modifier = Modifier.height(14.dp)
                 )
+
 
                 Text(
                     text = "←  Swipe  →",
@@ -754,10 +405,13 @@ fun QuranHadithCard(
                     fontSize = 12.sp
                 )
 
+
                 Spacer(
                     modifier = Modifier.height(10.dp)
                 )
 
+
+                // Page indicators
                 Row(
                     horizontalArrangement = Arrangement.Center
                 ) {
@@ -781,12 +435,103 @@ fun QuranHadithCard(
                                         } else {
                                             Color(0xFF526B61)
                                         },
+
                                     shape = RoundedCornerShape(50.dp)
                                 )
                         )
                     }
                 }
             }
+        }
+    }
+}
+
+
+// ======================================================
+// STATISTIC CARD
+// ======================================================
+
+@Composable
+fun StatisticCard(
+    title: String,
+    value: String,
+    modifier: Modifier
+) {
+
+    Card(
+        modifier = modifier.height(105.dp),
+
+        shape = RoundedCornerShape(16.dp),
+
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF091B15)
+        )
+    ) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+
+            horizontalAlignment = Alignment.CenterHorizontally,
+
+            verticalArrangement = Arrangement.Center
+        ) {
+
+            Text(
+                text = value,
+                color = Color(0xFF8FE36F),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(
+                modifier = Modifier.height(4.dp)
+            )
+
+            Text(
+                text = title,
+                color = Color(0xFFC5D2CC),
+                fontSize = 11.sp,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+
+// ======================================================
+// ACTION CARD
+// ======================================================
+
+@Composable
+fun ActionCard(
+    title: String,
+    modifier: Modifier
+) {
+
+    Card(
+        modifier = modifier.height(90.dp),
+
+        shape = RoundedCornerShape(16.dp),
+
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF0B2118)
+        )
+    ) {
+
+        Box(
+            modifier = Modifier.fillMaxSize(),
+
+            contentAlignment = Alignment.Center
+        ) {
+
+            Text(
+                text = title,
+                color = Color.White,
+                fontSize = 12.sp,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
