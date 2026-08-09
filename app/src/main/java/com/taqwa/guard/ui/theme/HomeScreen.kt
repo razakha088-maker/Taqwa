@@ -1,6 +1,6 @@
 package com.taqwa.guard.ui.theme
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,15 +15,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -41,26 +38,6 @@ import kotlinx.coroutines.delay
 @Composable
 fun HomeScreen() {
 
-    var protectionOn by remember {
-        mutableStateOf(true)
-    }
-
-    var explicitOn by remember {
-        mutableStateOf(true)
-    }
-
-    var womenOn by remember {
-        mutableStateOf(true)
-    }
-
-    var sensitivity by remember {
-        mutableIntStateOf(2)
-    }
-
-    var selectedAction by remember {
-        mutableStateOf("")
-    }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -69,7 +46,7 @@ fun HomeScreen() {
                     colors = listOf(
                         Color(0xFF06140F),
                         Color(0xFF09251A),
-                        Color(0xFF020B08)
+                        Color(0xFF03100C)
                     )
                 )
             )
@@ -81,17 +58,19 @@ fun HomeScreen() {
                 .padding(16.dp)
         ) {
 
-            // ==============================
-            // APP HEADER
-            // ==============================
+            // --------------------------------
+            // TAQWA HEADER
+            // --------------------------------
 
             Text(
                 text = "☾",
                 color = Color(0xFFE5C96A),
-                fontSize = 30.sp,
-                modifier = Modifier.align(
-                    Alignment.CenterHorizontally
-                )
+                fontSize = 28.sp,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+
+            Spacer(
+                modifier = Modifier.height(4.dp)
             )
 
             Text(
@@ -100,37 +79,36 @@ fun HomeScreen() {
                 fontSize = 34.sp,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 5.sp,
-                modifier = Modifier.align(
-                    Alignment.CenterHorizontally
-                )
+                modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
             Text(
                 text = "Guard your gaze. Protect your soul.",
                 color = Color(0xFFB8C8C0),
                 fontSize = 13.sp,
-                modifier = Modifier.align(
-                    Alignment.CenterHorizontally
-                )
+                modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
             Spacer(
                 modifier = Modifier.height(18.dp)
             )
 
-            // ==============================
-            // QURAN & HADITH
-            // ==============================
+
+            // --------------------------------
+            // QURAN & HADITH SLIDER
+            // --------------------------------
 
             QuranHadithCard()
 
+
             Spacer(
                 modifier = Modifier.height(18.dp)
             )
 
-            // ==============================
+
+            // --------------------------------
             // PROTECTION STATUS
-            // ==============================
+            // --------------------------------
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -140,110 +118,55 @@ fun HomeScreen() {
                 )
             ) {
 
-                Row(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(18.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .padding(18.dp)
                 ) {
 
-                    Column {
+                    Text(
+                        text = "Protection Status",
+                        color = Color(0xFFB8C8C0),
+                        fontSize = 14.sp
+                    )
 
-                        Text(
-                            text = "Protection",
-                            color = Color.White,
-                            fontSize = 19.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                    Spacer(
+                        modifier = Modifier.height(6.dp)
+                    )
 
-                        Spacer(
-                            modifier = Modifier.height(4.dp)
-                        )
+                    Text(
+                        text = "PROTECTED",
+                        color = Color(0xFF8FE36F),
+                        fontSize = 23.sp,
+                        fontWeight = FontWeight.Bold
+                    )
 
-                        Text(
-                            text = if (protectionOn) {
-                                "Protection is active"
-                            } else {
-                                "Protection is OFF"
-                            },
-                            color = if (protectionOn) {
-                                Color(0xFF8FE36F)
-                            } else {
-                                Color(0xFFFF8A80)
-                            },
-                            fontSize = 13.sp
-                        )
-                    }
+                    Spacer(
+                        modifier = Modifier.height(4.dp)
+                    )
 
-                    Switch(
-                        checked = protectionOn,
-                        onCheckedChange = {
-                            protectionOn = it
-                        },
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = Color.White,
-                            checkedTrackColor = Color(0xFF318451),
-                            uncheckedThumbColor = Color.White,
-                            uncheckedTrackColor = Color(0xFF4A5550)
-                        )
+                    Text(
+                        text = "✓  Taqwa Guard is protecting your device",
+                        color = Color(0xFFDCE8E2),
+                        fontSize = 13.sp
                     )
                 }
             }
 
-            Spacer(
-                modifier = Modifier.height(18.dp)
-            )
-
-            // ==============================
-            // DETECTION MODE
-            // ==============================
-
-            Text(
-                text = "DETECTION MODE",
-                color = Color(0xFFE5C96A),
-                fontSize = 17.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(
-                modifier = Modifier.height(10.dp)
-            )
-
-            DetectionSwitchCard(
-                title = "Explicit Content",
-                description = "Detect explicit images",
-                checked = explicitOn,
-                onCheckedChange = {
-                    explicitOn = it
-                }
-            )
-
-            Spacer(
-                modifier = Modifier.height(8.dp)
-            )
-
-            DetectionSwitchCard(
-                title = "Women Detection",
-                description = "Detect women in images",
-                checked = womenOn,
-                onCheckedChange = {
-                    womenOn = it
-                }
-            )
 
             Spacer(
                 modifier = Modifier.height(18.dp)
             )
 
-            // ==============================
-            // SENSITIVITY
-            // ==============================
+
+            // --------------------------------
+            // STATISTICS
+            // --------------------------------
 
             Text(
-                text = "SENSITIVITY",
-                color = Color(0xFFE5C96A),
-                fontSize = 17.sp,
+                text = "Statistics",
+                color = Color.White,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
 
@@ -256,46 +179,45 @@ fun HomeScreen() {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
-                SensitivityButton(
-                    title = "Low",
-                    selected = sensitivity == 1,
-                    modifier = Modifier.weight(1f),
-                    onClick = {
-                        sensitivity = 1
-                    }
+                StatisticCard(
+                    title = "Images",
+                    value = "0",
+                    modifier = Modifier.weight(1f)
                 )
 
-                SensitivityButton(
-                    title = "Medium",
-                    selected = sensitivity == 2,
-                    modifier = Modifier.weight(1f),
-                    onClick = {
-                        sensitivity = 2
-                    }
+                StatisticCard(
+                    title = "Videos",
+                    value = "0",
+                    modifier = Modifier.weight(1f)
                 )
 
-                SensitivityButton(
-                    title = "High",
-                    selected = sensitivity == 3,
-                    modifier = Modifier.weight(1f),
-                    onClick = {
-                        sensitivity = 3
-                    }
+                StatisticCard(
+                    title = "Blocked",
+                    value = "0",
+                    modifier = Modifier.weight(1f)
+                )
+
+                StatisticCard(
+                    title = "Time",
+                    value = "0m",
+                    modifier = Modifier.weight(1f)
                 )
             }
+
 
             Spacer(
                 modifier = Modifier.height(18.dp)
             )
 
-            // ==============================
+
+            // --------------------------------
             // QUICK ACTIONS
-            // ==============================
+            // --------------------------------
 
             Text(
-                text = "QUICK ACTIONS",
-                color = Color(0xFFE5C96A),
-                fontSize = 17.sp,
+                text = "Quick Actions",
+                color = Color.White,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
 
@@ -308,60 +230,24 @@ fun HomeScreen() {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
-                ActionButton(
+                ActionCard(
                     title = "Quick\nToggle",
-                    active = selectedAction == "Quick Toggle",
-                    modifier = Modifier.weight(1f),
-                    onClick = {
-                        protectionOn = !protectionOn
-                        selectedAction = "Quick Toggle"
-                    }
+                    modifier = Modifier.weight(1f)
                 )
 
-                ActionButton(
+                ActionCard(
+                    title = "Sensitivity",
+                    modifier = Modifier.weight(1f)
+                )
+
+                ActionCard(
                     title = "Allowed\nApps",
-                    active = selectedAction == "Allowed Apps",
-                    modifier = Modifier.weight(1f),
-                    onClick = {
-                        selectedAction = "Allowed Apps"
-                    }
+                    modifier = Modifier.weight(1f)
                 )
 
-                ActionButton(
+                ActionCard(
                     title = "Statistics",
-                    active = selectedAction == "Statistics",
-                    modifier = Modifier.weight(1f),
-                    onClick = {
-                        selectedAction = "Statistics"
-                    }
-                )
-            }
-
-            if (selectedAction.isNotEmpty()) {
-
-                Spacer(
-                    modifier = Modifier.height(10.dp)
-                )
-
-                Text(
-                    text = when (selectedAction) {
-                        "Quick Toggle" ->
-                            "Protection switched " +
-                                if (protectionOn) "ON" else "OFF"
-
-                        "Allowed Apps" ->
-                            "Allowed Apps selected"
-
-                        "Statistics" ->
-                            "Statistics selected"
-
-                        else ->
-                            ""
-                    },
-                    color = Color(0xFF9BEA7C),
-                    fontSize = 12.sp,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
+                    modifier = Modifier.weight(1f)
                 )
             }
         }
@@ -378,52 +264,15 @@ fun QuranHadithCard() {
 
     val messages = listOf(
 
-        """
-        রাসূলুল্লাহ ﷺ বলেছেন:
+        "সূরা নূর : ৩০\n\nমুমিন পুরুষদের বলুন, তারা যেন তাদের দৃষ্টি সংযত রাখে এবং তাদের লজ্জাস্থানের হেফাজত করে।",
 
-        "দুই চোখের জিনা হলো
-        (হারাম জিনিসের দিকে) তাকানো।"
+        "সূরা নূর : ৩১\n\nমুমিন নারীদের বলুন, তারা যেন তাদের দৃষ্টি সংযত রাখে এবং তাদের লজ্জাস্থানের হেফাজত করে।",
 
-        সূত্র: সহিহ বুখারি : ৬২৪৩
-        """.trimIndent(),
+        "আবু হুরায়রা (রাঃ) থেকে বর্ণিত\n\nরাসূলুল্লাহ ﷺ বলেছেন: যে ব্যক্তি আল্লাহ ও পরকালের প্রতি ঈমান রাখে, সে যেন উত্তম কথা বলে অথবা নীরব থাকে।",
 
-        """
-        "মুমিন পুরুষদের বলুন,
-        তারা যেন তাদের দৃষ্টিকে সংযত রাখে
-        এবং তাদের লজ্জাস্থানের হেফাজত করে।"
+        "রাসূলুল্লাহ ﷺ বলেছেন\n\nলজ্জা ঈমানের একটি শাখা।",
 
-        — সূরা নূর: ৩০
-        """.trimIndent(),
-
-        """
-        আলী ইবনে আবু তালিব (রা.) থেকে বর্ণিত:
-
-        রাসূলুল্লাহ ﷺ বলেছেন,
-        "হে আলী! এক দৃষ্টির পর আরেক দৃষ্টি দিও না।
-        কারণ প্রথম দৃষ্টি তোমার জন্য ক্ষমাযোগ্য,
-        কিন্তু দ্বিতীয়টি নয়।"
-
-        সূত্র: সুনানে আবু দাউদ : ২১৪৯
-        """.trimIndent(),
-
-        """
-        জারির ইবনে আব্দুল্লাহ (রা.) থেকে বর্ণিত:
-
-        আমি রাসূলুল্লাহ ﷺ-কে আকস্মিক দৃষ্টি
-        সম্পর্কে জিজ্ঞাসা করলে তিনি বললেন,
-
-        "তোমার দৃষ্টি ফিরিয়ে নাও।"
-
-        সূত্র: সহিহ মুসলিম : ২১৫৯
-        """.trimIndent(),
-
-        """
-        "মুমিন নারীদেরকে বলুন
-        তারা যেন তাদের দৃষ্টিকে সংযত রাখে
-        এবং তাদের লজ্জাস্থানের হেফাজত করে।"
-
-        — সূরা নূর: ৩১
-        """.trimIndent()
+        "আল্লাহ বলেন\n\nনিশ্চয়ই আল্লাহ মুত্তাকীদের সঙ্গে আছেন।"
     )
 
     var currentPage by remember {
@@ -433,6 +282,7 @@ fun QuranHadithCard() {
     var dragAmount by remember {
         mutableFloatStateOf(0f)
     }
+
 
     // Automatic slide
     LaunchedEffect(Unit) {
@@ -446,6 +296,7 @@ fun QuranHadithCard() {
         }
     }
 
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -454,6 +305,7 @@ fun QuranHadithCard() {
                 detectHorizontalDragGestures(
 
                     onHorizontalDrag = { _, amount ->
+
                         dragAmount += amount
                     },
 
@@ -478,26 +330,30 @@ fun QuranHadithCard() {
                     }
                 )
             },
+
         shape = RoundedCornerShape(24.dp),
+
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
         )
     ) {
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    Brush.radialGradient(
-                        colors = listOf(
-                            Color(0xFF1D4934),
-                            Color(0xFF0C281D),
-                            Color(0xFF03100C)
-                        )
-                    )
+        
+              Box(
+    modifier = Modifier
+        .fillMaxWidth()
+        .background(
+            Brush.radialGradient(
+                colors = listOf(
+                    Color(0xFF1D4934),
+                    Color(0xFF0C281D),
+                    Color(0xFF03100C)
                 )
-                .padding(22.dp)
-        ) {
+            )
+        )
+        .padding(22.dp)
+)     
+                   
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -521,18 +377,28 @@ fun QuranHadithCard() {
                     modifier = Modifier.height(12.dp)
                 )
 
-                Text(
-                    text = messages[currentPage],
-                    modifier = Modifier.fillMaxWidth(),
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    lineHeight = 27.sp,
-                    textAlign = TextAlign.Center
-                )
+
+                // Text transition
+                Crossfade(
+                    targetState = currentPage,
+                    label = "QuranHadithTransition"
+                ) { page ->
+
+                    Text(
+                        text = messages[page],
+                        modifier = Modifier.fillMaxWidth(),
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        lineHeight = 27.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
 
                 Spacer(
                     modifier = Modifier.height(14.dp)
                 )
+
 
                 Text(
                     text = "←  Swipe  →",
@@ -540,10 +406,13 @@ fun QuranHadithCard() {
                     fontSize = 12.sp
                 )
 
+
                 Spacer(
                     modifier = Modifier.height(10.dp)
                 )
 
+
+                // Page indicators
                 Row(
                     horizontalArrangement = Arrangement.Center
                 ) {
@@ -567,6 +436,7 @@ fun QuranHadithCard() {
                                         } else {
                                             Color(0xFF526B61)
                                         },
+
                                     shape = RoundedCornerShape(50.dp)
                                 )
                         )
@@ -579,154 +449,81 @@ fun QuranHadithCard() {
 
 
 // ======================================================
-// DETECTION SWITCH CARD
+// STATISTIC CARD
 // ======================================================
 
 @Composable
-fun DetectionSwitchCard(
+fun StatisticCard(
     title: String,
-    description: String,
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    value: String,
+    modifier: Modifier
 ) {
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
+        modifier = modifier.height(105.dp),
+
+        shape = RoundedCornerShape(16.dp),
+
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF091B15)
+        )
+    ) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+
+            horizontalAlignment = Alignment.CenterHorizontally,
+
+            verticalArrangement = Arrangement.Center
+        ) {
+
+            Text(
+                text = value,
+                color = Color(0xFF8FE36F),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(
+                modifier = Modifier.height(4.dp)
+            )
+
+            Text(
+                text = title,
+                color = Color(0xFFC5D2CC),
+                fontSize = 11.sp,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+
+// ======================================================
+// ACTION CARD
+// ======================================================
+
+@Composable
+fun ActionCard(
+    title: String,
+    modifier: Modifier
+) {
+
+    Card(
+        modifier = modifier.height(90.dp),
+
+        shape = RoundedCornerShape(16.dp),
+
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFF0B2118)
         )
     ) {
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = 16.dp,
-                    vertical = 13.dp
-                ),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-
-                Text(
-                    text = title,
-                    color = Color.White,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(
-                    modifier = Modifier.height(3.dp)
-                )
-
-                Text(
-                    text = description,
-                    color = Color(0xFF9FB5AC),
-                    fontSize = 11.sp
-                )
-            }
-
-            Switch(
-                checked = checked,
-                onCheckedChange = onCheckedChange,
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = Color.White,
-                    checkedTrackColor = Color(0xFF318451),
-                    uncheckedThumbColor = Color.White,
-                    uncheckedTrackColor = Color(0xFF4A5550)
-                )
-            )
-        }
-    }
-}
-
-
-// ======================================================
-// SENSITIVITY BUTTON
-// ======================================================
-
-@Composable
-fun SensitivityButton(
-    title: String,
-    selected: Boolean,
-    modifier: Modifier,
-    onClick: () -> Unit
-) {
-
-    Card(
-        modifier = modifier
-            .height(48.dp)
-            .clickable {
-                onClick()
-            },
-        shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(
-            containerColor =
-                if (selected) {
-                    Color(0xFF1B5A3B)
-                } else {
-                    Color(0xFF0B2118)
-                }
-        )
-    ) {
-
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
 
-            Text(
-                text = title,
-                color = Color.White,
-                fontSize = 13.sp,
-                fontWeight =
-                    if (selected) {
-                        FontWeight.Bold
-                    } else {
-                        FontWeight.Normal
-                    }
-            )
-        }
-    }
-}
-
-
-// ======================================================
-// ACTION BUTTON
-// ======================================================
-
-@Composable
-fun ActionButton(
-    title: String,
-    active: Boolean,
-    modifier: Modifier,
-    onClick: () -> Unit
-) {
-
-    Card(
-        modifier = modifier
-            .height(85.dp)
-            .clickable {
-                onClick()
-            },
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor =
-                if (active) {
-                    Color(0xFF1B5A3B)
-                } else {
-                    Color(0xFF0B2118)
-                }
-        )
-    ) {
-
-        Box(
-            modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
 
