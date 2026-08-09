@@ -10,9 +10,21 @@ class TaqwaAccessibilityService : AccessibilityService() {
         if (event == null) return
 
         when (event.eventType) {
-            AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
+            AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> {
+                val packageName = event.packageName?.toString() ?: "unknown"
+                val className = event.className?.toString() ?: "unknown"
+
+                Log.d(
+                    "TaqwaProtection",
+                    "Foreground app: $packageName | Screen: $className"
+                )
+            }
+
             AccessibilityEvent.TYPE_WINDOWS_CHANGED -> {
-                Log.d("TaqwaProtection", "Window changed")
+                Log.d(
+                    "TaqwaProtection",
+                    "Windows changed"
+                )
             }
         }
     }
