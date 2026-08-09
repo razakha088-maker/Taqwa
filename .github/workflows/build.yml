@@ -37,7 +37,10 @@ jobs:
             -Pandroid.injected.signing.store.password="$TAQWA_KEYSTORE_PASSWORD" \
             -Pandroid.injected.signing.key.alias="$TAQWA_KEY_ALIAS" \
             -Pandroid.injected.signing.key.password="$TAQWA_KEY_PASSWORD"
-
+      - name: Find generated AAB
+        run: |
+          echo "Searching for AAB files..."
+          find app/build -type f -name "*.aab" -print
       - name: Upload Release AAB
         uses: actions/upload-artifact@v4
         with:
