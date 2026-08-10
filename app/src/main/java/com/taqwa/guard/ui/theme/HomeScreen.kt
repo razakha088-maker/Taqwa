@@ -1,4 +1,5 @@
 package com.taqwa.guard.ui.theme
+import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -12,15 +13,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -28,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,8 +42,30 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 
 
+// ======================================================
+// HOME SCREEN
+// ======================================================
+
 @Composable
 fun HomeScreen() {
+
+    val context = LocalContext.current
+
+    var showSettings by remember {
+        mutableStateOf(false)
+    }
+
+    var dialogTitle by remember {
+        mutableStateOf("")
+    }
+
+    var dialogMessage by remember {
+        mutableStateOf("")
+    }
+
+    var showActionDialog by remember {
+        mutableStateOf(false)
+    }
 
     Box(
         modifier = Modifier
@@ -55,6 +84,9 @@ fun HomeScreen() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(
+                    rememberScrollState()
+                )
                 .padding(16.dp)
         ) {
 
@@ -66,7 +98,9 @@ fun HomeScreen() {
                 text = "☾",
                 color = Color(0xFFE5C96A),
                 fontSize = 28.sp,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier.align(
+                    Alignment.CenterHorizontally
+                )
             )
 
             Spacer(
@@ -79,14 +113,17 @@ fun HomeScreen() {
                 fontSize = 34.sp,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 5.sp,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier.align(
+                    Alignment.CenterHorizontally
+                )
             )
 
             Text(
                 text = "Guard your gaze. Protect your soul.",
                 color = Color(0xFFB8C8C0),
                 fontSize = 13.sp,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(
@@ -95,7 +132,7 @@ fun HomeScreen() {
 
 
             // --------------------------------
-            // QURAN & HADITH SLIDER
+            // QURAN & HADITH
             // --------------------------------
 
             QuranHadithCard()
@@ -206,7 +243,7 @@ fun HomeScreen() {
 
 
             Spacer(
-                modifier = Modifier.height(18.dp)
+                modifier = Modifier.height(20.dp)
             )
 
 
@@ -232,25 +269,150 @@ fun HomeScreen() {
 
                 ActionCard(
                     title = "Quick\nToggle",
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        Toast.makeText(
+                            context,
+                            "Taqwa Guard toggle",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 )
 
                 ActionCard(
                     title = "Sensitivity",
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        dialogTitle = "Sensitivity"
+                        dialogMessage =
+                            "Sensitivity settings will be available here."
+                        showActionDialog = true
+                    }
                 )
 
                 ActionCard(
                     title = "Allowed\nApps",
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        dialogTitle = "Allowed Apps"
+                        dialogMessage =
+                            "Allowed apps settings will be available here."
+                        showActionDialog = true
+                    }
                 )
 
                 ActionCard(
-                    title = "Statistics",
-                    modifier = Modifier.weight(1f)
+                    title = "Settings",
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        showSettings = true
+                    }
                 )
             }
+
+
+            Spacer(
+                modifier = Modifier.height(24.dp)
+            )
+
+
+            // --------------------------------
+            // BOTTOM INFORMATION
+            // --------------------------------
+
+            Text(
+                text = "Taqwa Guard",
+                color = Color(0xFF78968A),
+                fontSize = 12.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(
+                modifier = Modifier.height(20.dp)
+            )
         }
+    }
+
+
+    // ==================================================
+    // SETTINGS DIALOG
+    // ==================================================
+
+    if (showSettings) {
+
+        AlertDialog(
+            onDismissRequest = {
+                showSettings = false
+            },
+
+            title = {
+                Text(
+                    text = "Taqwa Settings",
+                    fontWeight = FontWeight.Bold
+                )
+            },
+
+            text = {
+                Text(
+                    text =
+                        "Taqwa Guard settings\n\n" +
+                        "• Protection status\n" +
+                        "• Sensitivity\n" +
+                        "• Allowed apps\n" +
+                        "• Accessibility service"
+                )
+            },
+
+            confirmButton = {
+
+                TextButton(
+                    onClick = {
+                        showSettings = false
+                    }
+                ) {
+                    Text("Close")
+                }
+            }
+        )
+    }
+
+
+    // ==================================================
+    // ACTION DIALOG
+    // ==================================================
+
+    if (showActionDialog) {
+
+        AlertDialog(
+            onDismissRequest = {
+                showActionDialog = false
+            },
+
+            title = {
+                Text(
+                    text = dialogTitle,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+
+            text = {
+                Text(
+                    text = dialogMessage
+                )
+            },
+
+            confirmButton = {
+
+                TextButton(
+                    onClick = {
+                        showActionDialog = false
+                    }
+                ) {
+                    Text("OK")
+                }
+            }
+        )
     }
 }
 
@@ -264,15 +426,26 @@ fun QuranHadithCard() {
 
     val messages = listOf(
 
-        "সূরা নূর : ৩০\n\nমুমিন পুরুষদের বলুন, তারা যেন তাদের দৃষ্টি সংযত রাখে এবং তাদের লজ্জাস্থানের হেফাজত করে।",
+        "সূরা নূর : ৩০\n\n" +
+                "মুমিন পুরুষদের বলুন, তারা যেন " +
+                "তাদের দৃষ্টি সংযত রাখে এবং তাদের " +
+                "লজ্জাস্থানের হেফাজত করে।",
 
-        "সূরা নূর : ৩১\n\nমুমিন নারীদের বলুন, তারা যেন তাদের দৃষ্টি সংযত রাখে এবং তাদের লজ্জাস্থানের হেফাজত করে।",
+        "সূরা নূর : ৩১\n\n" +
+                "মুমিন নারীদের বলুন, তারা যেন " +
+                "তাদের দৃষ্টি সংযত রাখে এবং তাদের " +
+                "লজ্জাস্থানের হেফাজত করে।",
 
-        "আবু হুরায়রা (রাঃ) থেকে বর্ণিত\n\nরাসূলুল্লাহ ﷺ বলেছেন: যে ব্যক্তি আল্লাহ ও পরকালের প্রতি ঈমান রাখে, সে যেন উত্তম কথা বলে অথবা নীরব থাকে।",
+        "আবু হুরায়রা (রাঃ) থেকে বর্ণিত\n\n" +
+                "রাসূলুল্লাহ সাল্লাল্লাহু আলাইহি ওয়াসাল্লাম ﷺ বলেছেন: " +
+                "যে ব্যক্তি আল্লাহ ও পরকালের প্রতি ঈমান রাখে, " +
+                "সে যেন উত্তম কথা বলে অথবা নীরব থাকে।",
 
-        "রাসূলুল্লাহ ﷺ বলেছেন\n\nলজ্জা ঈমানের একটি শাখা।",
+        "রাসূলুল্লাহ সাল্লাল্লাহু আলাইহি ওয়াসাল্লাম ﷺ বলেছেন\n\n" +
+                "লজ্জা ঈমানের একটি শাখা।",
 
-        "আল্লাহ বলেন\n\nনিশ্চয়ই আল্লাহ মুত্তাকীদের সঙ্গে আছেন।"
+        "আল্লাহ বলেন\n\n" +
+                "নিশ্চয়ই আল্লাহ মুত্তাকীদের সঙ্গে আছেন।"
     )
 
     var currentPage by remember {
@@ -284,7 +457,10 @@ fun QuranHadithCard() {
     }
 
 
-    // Automatic slide
+    // --------------------------------
+    // AUTOMATIC SLIDE
+    // --------------------------------
+
     LaunchedEffect(Unit) {
 
         while (true) {
@@ -296,6 +472,10 @@ fun QuranHadithCard() {
         }
     }
 
+
+    // --------------------------------
+    // CARD
+    // --------------------------------
 
     Card(
         modifier = Modifier
@@ -327,6 +507,11 @@ fun QuranHadithCard() {
                         }
 
                         dragAmount = 0f
+                    },
+
+                    onDragCancel = {
+
+                        dragAmount = 0f
                     }
                 )
             },
@@ -338,26 +523,25 @@ fun QuranHadithCard() {
         )
     ) {
 
-        
-              Box(
-    modifier = Modifier
-        .fillMaxWidth()
-        .background(
-            Brush.radialGradient(
-                colors = listOf(
-                    Color(0xFF1D4934),
-                    Color(0xFF0C281D),
-                    Color(0xFF03100C)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    Brush.radialGradient(
+                        colors = listOf(
+                            Color(0xFF1D4934),
+                            Color(0xFF0C281D),
+                            Color(0xFF03100C)
+                        )
+                    )
                 )
-            )
-        )
-        .padding(22.dp)
-)     
-                   
+                .padding(22.dp)
+        ) {
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment =
+                    Alignment.CenterHorizontally
             ) {
 
                 Text(
@@ -378,7 +562,10 @@ fun QuranHadithCard() {
                 )
 
 
-                // Text transition
+                // --------------------------------
+                // MESSAGE
+                // --------------------------------
+
                 Crossfade(
                     targetState = currentPage,
                     label = "QuranHadithTransition"
@@ -412,9 +599,16 @@ fun QuranHadithCard() {
                 )
 
 
-                // Page indicators
+                // --------------------------------
+                // PAGE INDICATORS
+                // --------------------------------
+
                 Row(
-                    horizontalArrangement = Arrangement.Center
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement =
+                        Arrangement.Center,
+                    verticalAlignment =
+                        Alignment.CenterVertically
                 ) {
 
                     messages.indices.forEach { index ->
@@ -423,7 +617,9 @@ fun QuranHadithCard() {
                             modifier = Modifier
                                 .padding(horizontal = 3.dp)
                                 .size(
-                                    if (index == currentPage) {
+                                    if (
+                                        index == currentPage
+                                    ) {
                                         9.dp
                                     } else {
                                         6.dp
@@ -431,13 +627,19 @@ fun QuranHadithCard() {
                                 )
                                 .background(
                                     color =
-                                        if (index == currentPage) {
+                                        if (
+                                            index ==
+                                            currentPage
+                                        ) {
                                             Color(0xFF9BEA7C)
                                         } else {
                                             Color(0xFF526B61)
                                         },
 
-                                    shape = RoundedCornerShape(50.dp)
+                                    shape =
+                                        RoundedCornerShape(
+                                            50.dp
+                                        )
                                 )
                         )
                     }
@@ -445,6 +647,8 @@ fun QuranHadithCard() {
             }
         }
     }
+}
+
 
 // ======================================================
 // STATISTIC CARD
@@ -472,9 +676,11 @@ fun StatisticCard(
                 .fillMaxSize()
                 .padding(8.dp),
 
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment =
+                Alignment.CenterHorizontally,
 
-            verticalArrangement = Arrangement.Center
+            verticalArrangement =
+                Arrangement.Center
         ) {
 
             Text(
@@ -506,11 +712,19 @@ fun StatisticCard(
 @Composable
 fun ActionCard(
     title: String,
-    modifier: Modifier
+    modifier: Modifier,
+    onClick: () -> Unit
 ) {
 
     Card(
-        modifier = modifier.height(90.dp),
+        modifier = modifier
+            .height(90.dp)
+            .pointerInput(Unit) {
+                // Keeps the card responsive while
+                // the HomeScreen itself is scrollable.
+            },
+
+        onClick = onClick,
 
         shape = RoundedCornerShape(16.dp),
 
