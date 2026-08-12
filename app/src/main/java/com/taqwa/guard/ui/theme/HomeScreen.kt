@@ -1,5 +1,7 @@
 package com.taqwa.guard.ui.theme
-import android.widget.Toast
+import android.content.Context
+import android.content.Intent
+import android.provider.Settings
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -13,12 +15,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -43,7 +49,7 @@ import kotlinx.coroutines.delay
 
 
 // ======================================================
-// HOME SCREEN
+// MAIN HOME SCREEN
 // ======================================================
 
 @Composable
@@ -51,21 +57,32 @@ fun HomeScreen() {
 
     val context = LocalContext.current
 
-    var showSettings by remember {
+    var protectionEnabled by remember {
+        mutableStateOf(true)
+    }
+
+    var showSensitivityDialog by remember {
         mutableStateOf(false)
     }
 
-    var dialogTitle by remember {
-        mutableStateOf("")
-    }
-
-    var dialogMessage by remember {
-        mutableStateOf("")
-    }
-
-    var showActionDialog by remember {
+    var showAllowedAppsDialog by remember {
         mutableStateOf(false)
     }
+
+    var showSettingsDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var sensitivity by remember {
+        mutableFloatStateOf(0.5f)
+    }
+
+    val sensitivityName = when {
+        sensitivity < 0.34f -> "Low"
+        sensitivity < 0.67f -> "Medium"
+        else -> "High"
+    }
+
 
     Box(
         modifier = Modifier
@@ -90,14 +107,14 @@ fun HomeScreen() {
                 .padding(16.dp)
         ) {
 
-            // --------------------------------
-            // TAQWA HEADER
-            // --------------------------------
+            // ==================================================
+            // HEADER
+            // ==================================================
 
             Text(
                 text = "☾",
                 color = Color(0xFFE5C96A),
-                fontSize = 28.sp,
+                fontSize = 30.sp,
                 modifier = Modifier.align(
                     Alignment.CenterHorizontally
                 )
@@ -122,8 +139,9 @@ fun HomeScreen() {
                 text = "Guard your gaze. Protect your soul.",
                 color = Color(0xFFB8C8C0),
                 fontSize = 13.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.align(
+                    Alignment.CenterHorizontally
+                )
             )
 
             Spacer(
@@ -131,9 +149,9 @@ fun HomeScreen() {
             )
 
 
-            // --------------------------------
+            // ==================================================
             // QURAN & HADITH
-            // --------------------------------
+            // ==================================================
 
             QuranHadithCard()
 
@@ -143,13 +161,15 @@ fun HomeScreen() {
             )
 
 
-            // --------------------------------
+            // ==================================================
             // PROTECTION STATUS
-            // --------------------------------
+            // ==================================================
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
+
                 shape = RoundedCornerShape(20.dp),
+
                 colors = CardDefaults.cardColors(
                     containerColor = Color(0xFF091B15)
                 )
@@ -172,8 +192,18 @@ fun HomeScreen() {
                     )
 
                     Text(
-                        text = "PROTECTED",
-                        color = Color(0xFF8FE36F),
+                        text = if (protectionEnabled) {
+                            "PROTECTED"
+                        } else {
+                            "PAUSED"
+                        },
+
+                        color = if (protectionEnabled) {
+                            Color(0xFF8FE36F)
+                        } else {
+                            Color(0xFFE5C96A)
+                        },
+
                         fontSize = 23.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -183,7 +213,12 @@ fun HomeScreen() {
                     )
 
                     Text(
-                        text = "✓  Taqwa Guard is protecting your device",
+                        text = if (protectionEnabled) {
+                            "✓  Taqwa Guard is protecting your device"
+                        } else {
+                            "Protection is currently paused"
+                        },
+
                         color = Color(0xFFDCE8E2),
                         fontSize = 13.sp
                     )
@@ -196,9 +231,9 @@ fun HomeScreen() {
             )
 
 
-            // --------------------------------
+            // ==================================================
             // STATISTICS
-            // --------------------------------
+            // ==================================================
 
             Text(
                 text = "Statistics",
@@ -213,7 +248,9 @@ fun HomeScreen() {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+
+                horizontalArrangement =
+                    Arrangement.spacedBy(8.dp)
             ) {
 
                 StatisticCard(
@@ -247,9 +284,9 @@ fun HomeScreen() {
             )
 
 
-            // --------------------------------
+            // ==================================================
             // QUICK ACTIONS
-            // --------------------------------
+            // ==================================================
 
             Text(
                 text = "Quick Actions",
@@ -264,50 +301,54 @@ fun HomeScreen() {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+
+                horizontalArrangement =
+                    Arrangement.spacedBy(8.dp)
             ) {
 
-                ActionCard(
-                    title = "Quick\nToggle",
-                    modifier = Modifier.weight(1f),
-                    onClick = {
-                        Toast.makeText(
-                            context,
-                            "Taqwa Guard toggle",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                )
+                ActionButton(
+                    title = if (protectionEnabled) {
+                        "Protection\nON"
+                    } else {
+                        "Protection\nOFF"
+                    },
 
-                ActionCard(
+                    modifier = Modifier.weight(1f)
+                ) {
+
+                    protectionEnabled =
+                        !protectionEnabled
+                }
+
+
+                ActionButton(
                     title = "Sensitivity",
-                    modifier = Modifier.weight(1f),
-                    onClick = {
-                        dialogTitle = "Sensitivity"
-                        dialogMessage =
-                            "Sensitivity settings will be available here."
-                        showActionDialog = true
-                    }
-                )
 
-                ActionCard(
+                    modifier = Modifier.weight(1f)
+                ) {
+
+                    showSensitivityDialog = true
+                }
+
+
+                ActionButton(
                     title = "Allowed\nApps",
-                    modifier = Modifier.weight(1f),
-                    onClick = {
-                        dialogTitle = "Allowed Apps"
-                        dialogMessage =
-                            "Allowed apps settings will be available here."
-                        showActionDialog = true
-                    }
-                )
 
-                ActionCard(
+                    modifier = Modifier.weight(1f)
+                ) {
+
+                    showAllowedAppsDialog = true
+                }
+
+
+                ActionButton(
                     title = "Settings",
-                    modifier = Modifier.weight(1f),
-                    onClick = {
-                        showSettings = true
-                    }
-                )
+
+                    modifier = Modifier.weight(1f)
+                ) {
+
+                    showSettingsDialog = true
+                }
             }
 
 
@@ -316,16 +357,110 @@ fun HomeScreen() {
             )
 
 
-            // --------------------------------
-            // BOTTOM INFORMATION
-            // --------------------------------
+            // ==================================================
+            // CURRENT SETTINGS
+            // ==================================================
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+
+                shape = RoundedCornerShape(18.dp),
+
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xFF091B15)
+                )
+            ) {
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(18.dp)
+                ) {
+
+                    Text(
+                        text = "Current Settings",
+                        color = Color.White,
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(12.dp)
+                    )
+
+                    Text(
+                        text = "Protection: ${
+                            if (protectionEnabled)
+                                "ON"
+                            else
+                                "OFF"
+                        }",
+
+                        color = Color(0xFFC5D2CC),
+                        fontSize = 13.sp
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(6.dp)
+                    )
+
+                    Text(
+                        text = "Sensitivity: $sensitivityName",
+
+                        color = Color(0xFFC5D2CC),
+                        fontSize = 13.sp
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(16.dp)
+                    )
+
+                    Button(
+                        onClick = {
+
+                            try {
+
+                                context.startActivity(
+                                    Intent(
+                                        Settings.ACTION_ACCESSIBILITY_SETTINGS
+                                    )
+                                )
+
+                            } catch (_: Exception) {
+                            }
+                        },
+
+                        modifier = Modifier.fillMaxWidth(),
+
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor =
+                                Color(0xFF1D4934)
+                        ),
+
+                        shape = RoundedCornerShape(14.dp)
+                    ) {
+
+                        Text(
+                            text = "Open Accessibility Settings",
+                            color = Color.White
+                        )
+                    }
+                }
+            }
+
+
+            Spacer(
+                modifier = Modifier.height(30.dp)
+            )
+
 
             Text(
                 text = "Taqwa Guard",
-                color = Color(0xFF78968A),
+                color = Color(0xFF526B61),
                 fontSize = 12.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.align(
+                    Alignment.CenterHorizontally
+                )
             )
 
             Spacer(
@@ -335,81 +470,159 @@ fun HomeScreen() {
     }
 
 
-    // ==================================================
-    // SETTINGS DIALOG
-    // ==================================================
+    // ======================================================
+    // SENSITIVITY DIALOG
+    // ======================================================
 
-    if (showSettings) {
+    if (showSensitivityDialog) {
 
         AlertDialog(
             onDismissRequest = {
-                showSettings = false
+                showSensitivityDialog = false
             },
 
             title = {
+
                 Text(
-                    text = "Taqwa Settings",
-                    fontWeight = FontWeight.Bold
+                    text = "Sensitivity"
                 )
             },
 
             text = {
-                Text(
-                    text =
-                        "Taqwa Guard settings\n\n" +
-                        "• Protection status\n" +
-                        "• Sensitivity\n" +
-                        "• Allowed apps\n" +
-                        "• Accessibility service"
-                )
+
+                Column {
+
+                    Text(
+                        text = sensitivityName,
+
+                        color = Color(0xFF1D4934),
+
+                        fontSize = 20.sp,
+
+                        fontWeight =
+                            FontWeight.Bold,
+
+                        modifier = Modifier.align(
+                            Alignment.CenterHorizontally
+                        )
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(15.dp)
+                    )
+
+                    Slider(
+                        value = sensitivity,
+
+                        onValueChange = {
+                            sensitivity = it
+                        },
+
+                        valueRange = 0f..1f
+                    )
+
+                    Row(
+                        modifier =
+                            Modifier.fillMaxWidth(),
+
+                        horizontalArrangement =
+                            Arrangement.SpaceBetween
+                    ) {
+
+                        Text("Low")
+
+                        Text("Medium")
+
+                        Text("High")
+                    }
+                }
             },
 
             confirmButton = {
 
                 TextButton(
                     onClick = {
-                        showSettings = false
+                        showSensitivityDialog = false
                     }
                 ) {
-                    Text("Close")
+
+                    Text(
+                        text = "DONE",
+                        color = Color(0xFF1D4934)
+                    )
                 }
             }
         )
     }
 
 
-    // ==================================================
-    // ACTION DIALOG
-    // ==================================================
+    // ======================================================
+    // ALLOWED APPS DIALOG
+    // ======================================================
 
-    if (showActionDialog) {
+    if (showAllowedAppsDialog) {
+
+        AllowedAppsDialog(
+            onClose = {
+                showAllowedAppsDialog = false
+            }
+        )
+    }
+
+
+    // ======================================================
+    // SETTINGS DIALOG
+    // ======================================================
+
+    if (showSettingsDialog) {
 
         AlertDialog(
             onDismissRequest = {
-                showActionDialog = false
+                showSettingsDialog = false
             },
 
             title = {
+
                 Text(
-                    text = dialogTitle,
-                    fontWeight = FontWeight.Bold
+                    text = "Taqwa Settings"
                 )
             },
 
             text = {
-                Text(
-                    text = dialogMessage
-                )
+
+                Column {
+
+                    Text(
+                        text = "Protection status\n\n" +
+                                "• Protection: ${
+                                    if (protectionEnabled)
+                                        "ON"
+                                    else
+                                        "OFF"
+                                }\n\n" +
+
+                                "• Sensitivity: $sensitivityName\n\n" +
+
+                                "• Allowed apps: Configure from Allowed Apps\n\n" +
+
+                                "• Accessibility service: " +
+                                "Open Android Accessibility Settings"
+                    )
+                }
             },
 
             confirmButton = {
 
                 TextButton(
                     onClick = {
-                        showActionDialog = false
+                        showSettingsDialog = false
                     }
                 ) {
-                    Text("OK")
+
+                    Text(
+                        text = "CLOSE",
+                        color = Color(0xFF1D4934)
+                    )
                 }
             }
         )
@@ -427,26 +640,21 @@ fun QuranHadithCard() {
     val messages = listOf(
 
         "সূরা নূর : ৩০\n\n" +
-                "মুমিন পুরুষদের বলুন, তারা যেন " +
-                "তাদের দৃষ্টি সংযত রাখে এবং তাদের " +
-                "লজ্জাস্থানের হেফাজত করে।",
+                "মুমিন পুরুষদের বলুন, তারা যেন তাদের দৃষ্টি সংযত রাখে এবং তাদের লজ্জাস্থানের হেফাজত করে।",
 
         "সূরা নূর : ৩১\n\n" +
-                "মুমিন নারীদের বলুন, তারা যেন " +
-                "তাদের দৃষ্টি সংযত রাখে এবং তাদের " +
-                "লজ্জাস্থানের হেফাজত করে।",
+                "মুমিন নারীদের বলুন, তারা যেন তাদের দৃষ্টি সংযত রাখে এবং তাদের লজ্জাস্থানের হেফাজত করে।",
 
         "আবু হুরায়রা (রাঃ) থেকে বর্ণিত\n\n" +
-                "রাসূলুল্লাহ সাল্লাল্লাহু আলাইহি ওয়াসাল্লাম ﷺ বলেছেন: " +
-                "যে ব্যক্তি আল্লাহ ও পরকালের প্রতি ঈমান রাখে, " +
-                "সে যেন উত্তম কথা বলে অথবা নীরব থাকে।",
+                "রাসূলুল্লাহ ﷺ বলেছেন: যে ব্যক্তি আল্লাহ ও পরকালের প্রতি ঈমান রাখে, সে যেন উত্তম কথা বলে অথবা নীরব থাকে।",
 
-        "রাসূলুল্লাহ সাল্লাল্লাহু আলাইহি ওয়াসাল্লাম ﷺ বলেছেন\n\n" +
+        "রাসূলুল্লাহ ﷺ বলেছেন\n\n" +
                 "লজ্জা ঈমানের একটি শাখা।",
 
         "আল্লাহ বলেন\n\n" +
                 "নিশ্চয়ই আল্লাহ মুত্তাকীদের সঙ্গে আছেন।"
     )
+
 
     var currentPage by remember {
         mutableIntStateOf(0)
@@ -457,9 +665,9 @@ fun QuranHadithCard() {
     }
 
 
-    // --------------------------------
+    // ==================================================
     // AUTOMATIC SLIDE
-    // --------------------------------
+    // ==================================================
 
     LaunchedEffect(Unit) {
 
@@ -472,10 +680,6 @@ fun QuranHadithCard() {
         }
     }
 
-
-    // --------------------------------
-    // CARD
-    // --------------------------------
 
     Card(
         modifier = Modifier
@@ -494,22 +698,21 @@ fun QuranHadithCard() {
                         if (dragAmount < -80f) {
 
                             currentPage =
-                                (currentPage + 1) % messages.size
+                                (currentPage + 1) %
+                                        messages.size
 
                         } else if (dragAmount > 80f) {
 
                             currentPage =
                                 if (currentPage == 0) {
+
                                     messages.lastIndex
+
                                 } else {
+
                                     currentPage - 1
                                 }
                         }
-
-                        dragAmount = 0f
-                    },
-
-                    onDragCancel = {
 
                         dragAmount = 0f
                     }
@@ -540,6 +743,7 @@ fun QuranHadithCard() {
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
+
                 horizontalAlignment =
                     Alignment.CenterHorizontally
             ) {
@@ -562,10 +766,6 @@ fun QuranHadithCard() {
                 )
 
 
-                // --------------------------------
-                // MESSAGE
-                // --------------------------------
-
                 Crossfade(
                     targetState = currentPage,
                     label = "QuranHadithTransition"
@@ -573,11 +773,18 @@ fun QuranHadithCard() {
 
                     Text(
                         text = messages[page],
-                        modifier = Modifier.fillMaxWidth(),
+
+                        modifier =
+                            Modifier.fillMaxWidth(),
+
                         color = Color.White,
+
                         fontSize = 16.sp,
+
                         lineHeight = 27.sp,
-                        textAlign = TextAlign.Center
+
+                        textAlign =
+                            TextAlign.Center
                     )
                 }
 
@@ -599,23 +806,18 @@ fun QuranHadithCard() {
                 )
 
 
-                // --------------------------------
-                // PAGE INDICATORS
-                // --------------------------------
-
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement =
-                        Arrangement.Center,
-                    verticalAlignment =
-                        Alignment.CenterVertically
+                        Arrangement.Center
                 ) {
 
                     messages.indices.forEach { index ->
 
                         Box(
                             modifier = Modifier
-                                .padding(horizontal = 3.dp)
+                                .padding(
+                                    horizontal = 3.dp
+                                )
                                 .size(
                                     if (
                                         index == currentPage
@@ -626,13 +828,17 @@ fun QuranHadithCard() {
                                     }
                                 )
                                 .background(
+
                                     color =
                                         if (
                                             index ==
                                             currentPage
                                         ) {
+
                                             Color(0xFF9BEA7C)
+
                                         } else {
+
                                             Color(0xFF526B61)
                                         },
 
@@ -706,45 +912,141 @@ fun StatisticCard(
 
 
 // ======================================================
-// ACTION CARD
+// ACTION BUTTON
 // ======================================================
 
 @Composable
-fun ActionCard(
+fun ActionButton(
     title: String,
     modifier: Modifier,
     onClick: () -> Unit
 ) {
 
-    Card(
-        modifier = modifier
-            .height(90.dp)
-            .pointerInput(Unit) {
-                // Keeps the card responsive while
-                // the HomeScreen itself is scrollable.
-            },
-
+    Button(
         onClick = onClick,
+
+        modifier = modifier.height(90.dp),
 
         shape = RoundedCornerShape(16.dp),
 
-        colors = CardDefaults.cardColors(
+        colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF0B2118)
-        )
+        ),
+
+        contentPadding = androidx.compose.foundation.layout
+            .PaddingValues(6.dp)
     ) {
 
-        Box(
-            modifier = Modifier.fillMaxSize(),
+        Text(
+            text = title,
 
-            contentAlignment = Alignment.Center
-        ) {
+            color = Color.White,
+
+            fontSize = 12.sp,
+
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+
+// ======================================================
+// ALLOWED APPS
+// ======================================================
+
+@Composable
+fun AllowedAppsDialog(
+    onClose: () -> Unit
+) {
+
+    val apps = listOf(
+        "Chrome",
+        "YouTube",
+        "Facebook",
+        "Instagram",
+        "Messenger",
+        "WhatsApp",
+        "Telegram"
+    )
+
+    var selectedApps by remember {
+        mutableStateOf(
+            setOf<String>()
+        )
+    }
+
+
+    AlertDialog(
+        onDismissRequest = onClose,
+
+        title = {
 
             Text(
-                text = title,
-                color = Color.White,
-                fontSize = 12.sp,
-                textAlign = TextAlign.Center
+                text = "Allowed Apps"
             )
+        },
+
+        text = {
+
+            Column {
+
+                Text(
+                    text = "Select the apps where Taqwa Guard should work."
+                )
+
+                Spacer(
+                    modifier = Modifier.height(10.dp)
+                )
+
+                apps.forEach { app ->
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 2.dp),
+
+                        verticalAlignment =
+                            Alignment.CenterVertically
+                    ) {
+
+                        androidx.compose.material3.Checkbox(
+                            checked =
+                                selectedApps.contains(app),
+
+                            onCheckedChange = { checked ->
+
+                                selectedApps =
+                                    if (checked) {
+
+                                        selectedApps + app
+
+                                    } else {
+
+                                        selectedApps - app
+                                    }
+                            }
+                        )
+
+                        Text(
+                            text = app,
+                            color = Color.Black
+                        )
+                    }
+                }
+            }
+        },
+
+        confirmButton = {
+
+            TextButton(
+                onClick = onClose
+            ) {
+
+                Text(
+                    text = "DONE",
+                    color = Color(0xFF1D4934)
+                )
+            }
         }
-    }
+    )
 }
