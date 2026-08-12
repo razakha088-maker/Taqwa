@@ -1,35 +1,75 @@
-package com.taqwa.guard.accessibility
+package com.taqwa.guard
 
 import android.accessibilityservice.AccessibilityService
+import android.graphics.Color
+import android.graphics.PixelFormat
+import android.view.Gravity
+import android.view.View
+import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
-import android.util.Log
 
 class TaqwaAccessibilityService : AccessibilityService() {
 
+    private var windowManager: WindowManager? = null
+    private var blurView: View? = null
+
+    override fun onServiceConnected() {
+        super.onServiceConnected()
+        windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
+    }
+
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        if (event == null) return
-
-        when (event.eventType) {
-            AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> {
-                val packageName = event.packageName?.toString() ?: "unknown"
-                val className = event.className?.toString() ?: "unknown"
-
-                Log.d(
-                    "TaqwaProtection",
-                    "Foreground app: $packageName | Screen: $className"
-                )
-            }
-
-            AccessibilityEvent.TYPE_WINDOWS_CHANGED -> {
-                Log.d(
-                    "TaqwaProtection",
-                    "Windows changed"
-                )
-            }
-        }
+        // Service is intentionally passive for now.
+        //
+        // Later:
+        // Female gender-content detection -> showBlur()
+        // male gender content -> hideBlur()
     }
 
     override fun onInterrupt() {
-        Log.d("TaqwaProtection", "Service interrupted")
+        hideBlur()
+    }
+
+    private fun showBlur() {
+        if (blurView != null) return
+
+        val view = View(this).apply {
+            setBackgroundColor(Color.argb(235, 0, 0, 0))
+        }
+
+        val params = WindowManager.LayoutParams(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            PixelFormat.TRANSLUCENT
+        )
+
+        params.gravity = Gravity.TOP or Gravity.START
+
+        try {
+            windowManager?.addView(view, params)
+            blurView = view
+        } catch (_: Exception) {
+            blurView = null
+        }
+    }
+
+    private fun hideBlur() {
+        blurView?.let { view ->
+            try {
+                windowManager?.removeView(view)
+            } catch (_: Exception) {
+            }
+        }
+
+        blurView = null
+    }
+
+    override fun onDestroy() {
+        hideBlur()
+        windowManager = null
+        super.onDestroy()
     }
 }
